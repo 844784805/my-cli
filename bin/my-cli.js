@@ -8,6 +8,7 @@ import fs from "fs-extra";
 import { program } from "commander";
 import path from "path";
 import download from "download-git-repo";
+import { log } from "console";
 
 program
   .command("create")
@@ -36,18 +37,52 @@ program
       //   path.resolve(option1.localPath, choose),
       //   `./${projectName}`
       // );
-      down()
-      syncTemplate.succeed();
-      console.log(
-        chalk.green(chalk.blue.underline.bold(projectName) + " 项目创建成功!")
+      // syncTemplate.succeed();
+      download(
+        `https://github.com:844784805/my-cli#master`,
+        `./${projectName}/demo`,
+        async function (err) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          try {
+            await fs.copySync(
+              path.resolve(`./${projectName}/demo/templates`, choose),
+              `./${projectName}`
+            );
+            await fs.remove(`./${projectName}/demo`);
+
+            syncTemplate.succeed();
+            console.log(
+              chalk.green(
+                chalk.blue.underline.bold(projectName) + " 项目创建成功!"
+              )
+            );
+            console.log(`
+                __      __   __     __       _ _ _
+               /  |    /  |  | |   / /    ___| (_) |
+              / /| |  / /| |  |_| /_/___ / __| | | |
+             / /  | |/ /  | |   | |  ___| (__| | |_|
+            /_/    |__/    |_|  |_|      |___|_|_(_)
+          
+            `);
+          } catch (error) {
+            console.error(chalk.red("处理模板文件失败："), error);
+          }
+        }
       );
-      console.log(`
-          __      __   __     __       _ _ _
-         /  |    /  |  | |   / /    ___| (_) |
-        / /| |  / /| |  |_| /_/___ / __| | | |
-       / /  | |/ /  | |   | |  ___| (__| | |_|
-      /_/    |__/    |_|  |_|      |___|_|_(_)
-      `);
+
+      // console.log(
+      //   chalk.green(chalk.blue.underline.bold(projectName) + " 项目创建成功!")
+      // );
+      // console.log(`
+      //     __      __   __     __       _ _ _
+      //    /  |    /  |  | |   / /    ___| (_) |
+      //   / /| |  / /| |  |_| /_/___ / __| | | |
+      //  / /  | |/ /  | |   | |  ___| (__| | |_|
+      // /_/    |__/    |_|  |_|      |___|_|_(_)
+      // `);
     } catch (err) {
       console.error(err);
     }
