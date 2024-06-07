@@ -1,5 +1,5 @@
 {
-  "name": "my-cli",
+  "name": "zshcli",
   "version": "1.0.0",
   "bin": "/bin/my-cli.js",
   "description": "",
